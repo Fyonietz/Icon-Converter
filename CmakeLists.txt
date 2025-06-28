@@ -1,0 +1,9 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
+
+project(Ice)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+file(GLOB_RECURSE SRC "src/*.cpp")
+
+add_executable(${CMAKE_PROJECT_NAME}
+    ${SRC}
+)

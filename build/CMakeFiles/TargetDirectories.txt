@@ -1,0 +1,3 @@
+/d/Repo/Icon-Converter/build/CMakeFiles/Ice.dir
+/d/Repo/Icon-Converter/build/CMakeFiles/edit_cache.dir
+/d/Repo/Icon-Converter/build/CMakeFiles/rebuild_cache.dir

@@ -7,3 +7,10 @@ file(GLOB_RECURSE SRC "src/*.cpp")
 add_executable(${CMAKE_PROJECT_NAME}
     ${SRC}
 )
+include_directories(${CMAKE_PROJECT_NAME}
+    PRIVATE src
+)
+target_link_libraries(${CMAKE_PROJECT_NAME}
+    gdiplus
+
+)

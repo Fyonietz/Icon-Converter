@@ -36,11 +36,6 @@ void get_icon(const char* input_path,const wchar_t  *output_path){
 
     std::filesystem::path p(input_path);
 
-    // if(p.extension() != ".exe"){
-    //     std::cerr << "Icon extraction only supported for .exe files\n";
-    //     return;
-    // }
-
     HICON hIcon = nullptr;
     if(ExtractIconExA(input_path,0,&hIcon,nullptr,1) <= 0 || hIcon == nullptr){
         std::cerr << "Failed To Extract Icon" << std::endl;
@@ -124,7 +119,7 @@ void generate(std::vector<AppInfo> &apps,std::string &output_path,char *argv[]){
         std::wstring wide_output = ConvertToWChar(output_path);
         get_icon(app.app_location.c_str(), wide_output.c_str());
         std::cout << "App Extracted: " << ++counter << std::endl;
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
 }
 }
 int main(int argc,char *argv[]){
@@ -150,7 +145,10 @@ int main(int argc,char *argv[]){
             return 1;
         }
         output_path = std::string(argv[2]) + apps[0].name + ".png";
-        generate(apps, output_path, argv);
+        
+        std::thread worker(generate,std::ref(apps), std::ref(output_path), argv);
+
+        worker.join();
     }else{
         std::cout << "Error : Must .JSON File Generated From Sea.exe" << std::endl;
         return 1;

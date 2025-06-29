@@ -145,15 +145,18 @@ int main(int argc,char *argv[]){
             return 1;
         }
         output_path = std::string(argv[2]) + apps[0].name + ".png";
-        
+        auto start = std::chrono::high_resolution_clock::now();
         std::thread worker(generate,std::ref(apps), std::ref(output_path), argv);
-
         worker.join();
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double> duration = end-start;
+        std::cout << "Icon Extractions Done" << std::endl;
+        std::cout << "Time Taken(s): " <<duration.count() << "Seconds" << std::endl;
     }else{
         std::cout << "Error : Must .JSON File Generated From Sea.exe" << std::endl;
         return 1;
     }
     
-    std::cout << "Icon Extractions Done" << std::endl;
+
     return 0;
 }

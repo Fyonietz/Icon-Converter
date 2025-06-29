@@ -151,7 +151,7 @@ int main(int argc,char *argv[]){
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration = end-start;
         std::cout << "Icon Extractions Done" << std::endl;
-        std::cout << "Time Taken(s): " <<duration.count() << "Seconds" << std::endl;
+        std::cout << "Time Taken(s): " <<duration.count() << " Seconds" << std::endl;
     }else{
         std::cout << "Error : Must .JSON File Generated From Sea.exe" << std::endl;
         return 1;

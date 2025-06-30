@@ -8,6 +8,7 @@
 #include "json.hpp"
 #include <fstream>
 #include <chrono>
+#include "tinyfiledialogs.h"
 
 class GDIPlusManager{
     public:
@@ -112,27 +113,30 @@ std::vector<AppInfo> parse_app_lists(const std::string &filename){
     return apps;
 };
 
-void generate(std::vector<AppInfo> &apps,std::string &output_path,char *argv[]){
+void generate(std::vector<AppInfo> &apps,std::string &output_path_final,const char *output_path){
         int counter = 0;
         for (const auto &app: apps){
-        output_path = std::string(argv[2]) +app.name+ ".png";
-        std::wstring wide_output = ConvertToWChar(output_path);
+        std::string output_path_final = std::string(output_path) +"\\"+app.name+ ".png";
+        std::wstring wide_output = ConvertToWChar(output_path_final);
         get_icon(app.app_location.c_str(), wide_output.c_str());
         std::cout << "App Extracted: " << ++counter << std::endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(50));
 }
 }
 int main(int argc,char *argv[]){
-    if(argc < 3){
-        std::cout << "Use <input.json> <output_path>" << std::endl;
-        return 0;
-    }
-
-    std::string input_path = argv[1];
-    std::string output_path;
-
-    if(input_path.size() >= 5 && input_path.substr(input_path.size() - 5) == ".json"){
-        std::cout << "Json File Detected" << std::endl;
+    const char* filter[1]= {"*.json"};
+    char const *input_path = tinyfd_openFileDialog(
+        "Please Open Input FIle",
+        "",
+        1,
+        filter,
+        "Open JSON File",
+        0
+    );
+    std::string working_dir = std::filesystem::current_path().string();
+    char const *output_path=tinyfd_selectFolderDialog(
+        "Save As",working_dir.c_str()
+    );
         std::vector<AppInfo> apps;
         try {
             apps = parse_app_lists(input_path);
@@ -144,18 +148,15 @@ int main(int argc,char *argv[]){
             std::cerr << "No apps found in JSON." << std::endl;
             return 1;
         }
-        output_path = std::string(argv[2]) + apps[0].name + ".png";
+        std::string output_file_path = std::string(output_path) + "\\" + apps[0].name + ".png";
+        std::cout << output_file_path << std::endl;
         auto start = std::chrono::high_resolution_clock::now();
-        std::thread worker(generate,std::ref(apps), std::ref(output_path), argv);
+        std::thread worker(generate, std::ref(apps), std::ref(output_file_path),output_path);
         worker.join();
         auto end = std::chrono::high_resolution_clock::now();
         std::chrono::duration<double> duration = end-start;
         std::cout << "Icon Extractions Done" << std::endl;
         std::cout << "Time Taken(s): " <<duration.count() << " Seconds" << std::endl;
-    }else{
-        std::cout << "Error : Must .JSON File Generated From Sea.exe" << std::endl;
-        return 1;
-    }
     
 
     return 0;

@@ -3,14 +3,17 @@ CMAKE_MINIMUM_REQUIRED(VERSION 3.10)
 project(Ice)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 file(GLOB_RECURSE SRC "src/*.cpp")
-
+file(GLOB_RECURSE C_FILES "src/*.c")
 add_executable(${CMAKE_PROJECT_NAME}
     ${SRC}
+    ${C_FILES}
 )
 include_directories(${CMAKE_PROJECT_NAME}
     PRIVATE src
+    PRIVATE header
 )
 target_link_libraries(${CMAKE_PROJECT_NAME}
     gdiplus
-
+    Comdlg32
+    Ole32
 )
